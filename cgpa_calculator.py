@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 
 # Theme configuration
 st.set_page_config(page_title="CGPA Calculator", layout="centered")
@@ -8,9 +7,6 @@ st.set_page_config(page_title="CGPA Calculator", layout="centered")
 GRADE_POINTS = {
     "O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "U": 0
 }
-
-# Convert grade dictionary to a DataFrame for displaying in a table
-grade_df = pd.DataFrame(list(GRADE_POINTS.items()), columns=["Grade", "Points"])
 
 # Function to calculate SGPA
 def calculate_sgpa(grades, credits):
@@ -24,10 +20,19 @@ def calculate_cgpa(previous_cgpa, previous_credits, current_sgpa, current_credit
     total_credits = previous_credits + current_credits
     return round(total_points / total_credits, 2) if total_credits > 0 else 0.0
 
-# UI: Title & Grade Table
+# UI: Title
 st.title("🎓 SGPA & CGPA Calculator")
+
+# Horizontal Grade Table
 st.markdown("### 📊 Grade-to-Point Table")
-st.table(grade_df.style.set_properties(**{'text-align': 'center'}))
+grade_row = " | ".join(GRADE_POINTS.keys())  
+points_row = " | ".join(map(str, GRADE_POINTS.values()))  
+
+st.markdown(f"""
+| {grade_row} |
+| {' | '.join(['---'] * len(GRADE_POINTS))} |
+| {points_row} |
+""")
 
 # Previous semester details
 is_first_semester = st.radio("📌 Is this your first semester?", ("Yes", "No"))
